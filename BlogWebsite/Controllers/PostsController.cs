@@ -39,7 +39,10 @@ namespace BlogWebsite.Controllers
             }
 
 
-            return View(post);
+            List<Comment> com = db.Comments.Where(x => x.PostID == id).ToList();
+
+            ViewModel vm = new ViewModel { post = post, comment = com };
+            return View("Details", vm);
         }
 
         // GET: Posts/Create
@@ -156,5 +159,33 @@ namespace BlogWebsite.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult Comment(string name, string comment, int Id)
+        {
+            using (var d = new ApplicationDbContext())
+            {
+                int def = 0;
+                d.Database.ExecuteSqlCommand("Insert Into Comments Values('" + name + "','" + comment + "','" + Id + "','" + def + "')");
+                Post p = db.Posts.Where(x => x.ID == Id).Include(x => x.Tags).FirstOrDefault();
+                List<Comment> com = db.Comments.Where(x => x.PostID == Id).ToList();
+                ViewModel vm = new ViewModel { post = p, comment = com };
+                return View("Details", vm);
+            }
+        }
+
+        public ActionResult ReplyComment(string name, string comment, int Id, int ParentID)
+        {
+            using (var d = new ApplicationDbContext())
+            {
+                d.Database.ExecuteSqlCommand("Insert Into Comments Values('" + name + "','" + comment + "','" + Id + "','" + ParentID + "')");
+                Post p = db.Posts.Where(x => x.ID == Id).Include(x => x.Tags).FirstOrDefault();
+                List<Comment> com = db.Comments.Where(x => x.PostID == Id).ToList();
+                ViewModel vm = new ViewModel { post = p, comment = com };
+                return View("Details", vm);
+            }
+        }
+
+
+
     }
 }
