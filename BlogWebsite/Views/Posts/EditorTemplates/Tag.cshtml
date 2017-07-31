@@ -1,0 +1,20 @@
+﻿@model BlogWebsite.Models.Tag
+
+<div>
+    @Html.HiddenFor(m => m.ID)
+
+    <div>
+
+        @*@if (Model.ID > 0)
+            {
+            @Html.DisplayFor(m => m.Name)
+            @Html.HiddenFor(m => m.Name)
+        }*@
+        
+            @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+        
+
+
+    </div>
+</div>

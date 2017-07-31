@@ -1,0 +1,38 @@
+﻿@model BlogWebsite.Models.Post
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h1>@Model.Title</h1>
+<div style="margin-top: 50px">
+    <div class="row">
+        <div class="col-md-8">
+            <img src="~/image/tag.png" height="30" width="30" />
+            @foreach (var item in Model.Tags)
+            {
+                <label>@item.Name |</label>
+            }
+        </div>
+        <div class="col-md-4">
+            <label>@Model.Date</label>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 50px">
+        <div class="col-md-12"><p style="font-size:large">@Model.Text</p></div>
+    </div>
+    <div class="row" style="margin-top: 50px">
+        <div class="col-md-6">
+            <label>By : @Model.Author</label>
+        </div>
+        <div class="col-md-6">
+            <p style="text-align:right"><a href="~/Posts/Index" class="btn btn-primary btn-lg">Back &raquo;</a></p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
