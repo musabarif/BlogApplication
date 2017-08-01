@@ -4,7 +4,22 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<table>
+    <tr>
+        <td>&nbsp; </td>
+        <td style="margin-left:50px;">
+            @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success" })
+        </td>
+        <td>
+            <form action="~/Posts/Search" method="post" style="margin-left:720px;">
+                <input type="text" name="sr" value="" />
+                <input type="submit" name="submit" value="Search By tags" class="btn btn-success " />
+            </form>
+        </td>
+    </tr>
+</table>
+
+
 
 @foreach (var item in Model)
 {

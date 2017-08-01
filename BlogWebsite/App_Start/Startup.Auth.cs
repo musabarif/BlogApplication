@@ -60,8 +60,8 @@ namespace BlogWebsite
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{
-            //    ClientId = "",
-            //    ClientSecret = ""
+            //    ClientId = "518243580369-bvelubel98o0rh7jao2mrfh1ruhi63m1.apps.googleusercontent.com",
+            //    ClientSecret = "aWujxsfz59eTRAa-FCVlA_Gx"
             //});
         }
     }

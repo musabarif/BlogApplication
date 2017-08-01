@@ -160,6 +160,21 @@ namespace BlogWebsite.Controllers
             base.Dispose(disposing);
         }
 
+        //[HttpPost]
+        //public ActionResult Search(string sr)
+        //{
+        //    using (var d = new ApplicationDbContext())
+        //    {
+        //        //List<Post> list = d.Database.SqlQuery<Post>($"Select * From Posts Where ID in (Select Post_ID From Tags Where Name Like '%{sr}%')").ToList<Post>();
+        //        List<Post> list = d.Posts.Where()
+        //        if (list == null)
+        //            return View("Index", db.Posts.Include(x => x.Tags).ToList());
+        //        else
+
+        //            return View("Index", list);
+        //    }
+        //}
+
         public ActionResult Comment(string name, string comment, int Id)
         {
             using (var d = new ApplicationDbContext())

@@ -43,15 +43,15 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Author, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @{ 
+                @*@{ 
                     BlogWebsite.Models.ApplicationUser _user;
                     using (var db = new BlogWebsite.Models.ApplicationDbContext())
                     {
                         var _username = User.Identity.GetUserName();
                         _user = db.Users.FirstOrDefault(uS => uS.UserName == _username);
                     }
-                }
-                @Html.EditorFor(model => model.Author, new {htmlAttributes = new { @class = "form-control", @Value = _user.Name } })
+                }*@
+                @Html.EditorFor(model => model.Author, new {htmlAttributes = new { @class = "form-control", @*@Value = _user.Name*@ } })
                 @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
             </div>
         </div>
