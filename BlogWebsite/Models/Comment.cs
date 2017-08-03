@@ -12,5 +12,6 @@ namespace BlogWebsite.Models
         public string Comments { get; set; }
         public int PostID { get; set; }
         public int ParentID { get; set; }
+        public string CommentTime { get; set; }
     }
 }

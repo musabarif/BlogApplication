@@ -36,67 +36,57 @@
     <div>
         <h3>Comments</h3>
         <hr />
-        <div class="container">
-            <div class="panel panel-success">
-                <div class="panel-heading">
 
-                    @foreach (var i in Model.comment.Where(x => x.ParentID == 0))
-                    {
-                        <dl class="dl-horizontal" style="padding-top:5px">
-                            <dt style="padding-top:5px">
-                                Name:
-                            </dt>
 
-                            <dd style="padding-top:5px">
-                                @i.Name
-                            </dd>
+        @foreach (var i in Model.comment.Where(x => x.ParentID == 0))
+        {
+            <div class="container">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
 
-                            <dt style="padding-top:5px">
-                                Comment:
-                            </dt>
 
-                            <dd style="padding-top:5px">
-                                @i.Comments
-                            </dd>
+                        <div class="" style="padding-top:5px;display:inline">
 
-                        </dl>
 
-                        //The Reply to  Comment
-                        foreach (var m in Model.comment.Where(x => x.ParentID == i.ID))
+                            <div style="padding-top:5px">
+                                <label style="">@i.Name : @i.Comments</label>
+                                &nbsp;&nbsp;
+                                On : @i.CommentTime
+                            </div>
+
+
+                        </div>
+
+
+                        @foreach (var m in Model.comment.Where(x => x.ParentID == i.ID))
                         {
-                            <dl class="dl-horizontal" style="padding-top:5px">
-                                <dt style="padding-top:5px">
-                                    Name:
-                                </dt>
 
-                                <dd style="padding-top:5px">
-                                    @m.Name
-                                </dd>
-
-                                <dt style="padding-top:5px">
-                                    Comment:
-                                </dt>
-
-                                <dd style="padding-top:5px">
-                                    @m.Comments
-                                </dd>
-
-                            </dl>
+                            <div style="padding-top:5px;margin-left:50px">
+                                <label> @m.Name :@m.Comments</label>
+                                &nbsp;&nbsp;
+                                On:@m.CommentTime
+                            </div>
                         }
 
+                        <dl>
+                            <dt style="padding-top:2px;margin-left:100px">
+                                <a href="#" class="Reply">Reply</a>
+                            </dt>
+                        </dl>
 
 
-                        <div class="container">
+
+                        <div class="ReplyForm" style="display:none" id="ReplyForm">
                             <div class="panel panel-info">
                                 <div class="panel-heading">
                                     <label>Reply To This Comment</label><br />
                                     <form action="~/Posts/ReplyComment" method="post" class="form-horizontal">
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-2">Name:</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
-                                            </div>
-                                        </div>
+                                        @*<div class="form-group">
+                                                <label class="control-label col-sm-2">Name:</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+                                                </div>
+                                            </div>*@
                                         <div class="form-group">
                                             <label class="control-label col-sm-2">Comment:</label>
                                             <div class="col-sm-10">
@@ -116,6 +106,8 @@
                                             </div>
                                         </div>
 
+                                        <input type="hidden" name="CommentTime" value="@DateTime.Now" />
+
                                         <div class="form-group">
                                             <div class="col-sm-offset-2 col-sm-10">
                                                 <button type="submit" class="btn btn-success">Post Comment</button>
@@ -127,14 +119,11 @@
                             </div>
                         </div>
 
-
-                    }
-
-
-
+                    </div>
                 </div>
             </div>
-        </div>
+
+        }
     </div>
 }
 
@@ -145,12 +134,12 @@
         <div class="panel-heading">
             <label>Post Comment</label><br />
             <form action="~/Posts/Comment" method="post" class="form-horizontal">
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Name:</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
-                    </div>
-                </div>
+                @*<div class="form-group">
+                        <label class="control-label col-sm-2">Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+                        </div>
+                    </div>*@
                 <div class="form-group">
                     <label class="control-label col-sm-2">Comment:</label>
                     <div class="col-sm-10">
@@ -170,10 +159,23 @@
                     </div>
                 </div>
 
+                <input type="hidden" name="CommentTime" value="@DateTime.Now" />
+
             </form>
         </div>
     </div>
 </div>
+
+<script type="text/javascript" src="~/Scripts/jquery-1.10.2.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.Reply').click(function (e) {
+            e.preventDefault();
+            $('.ReplyForm').toggle();
+        });
+    });
+</script>
 
 
 

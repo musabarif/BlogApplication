@@ -7,18 +7,13 @@
 
     <ul class="nav navbar-nav navbar-right">
         <li>
-            @{ 
-                BlogWebsite.Models.ApplicationUser _user;
-                using (var db = new BlogWebsite.Models.ApplicationDbContext())
-                {
-                    var _username = User.Identity.GetUserName();
-                    _user = db.Users.FirstOrDefault(uS => uS.UserName == _username);
-                }
-            }
-            @Html.ActionLink(string.Format("Welcome, {0}!", _user.Name), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+          @Html.ActionLink(string.Format("Welcome ! {0}",Session["name"]),"ShowProfile","Account")
         </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        <li>
+            @Html.ActionLink("Logout","Logout","Account")
+        </li>
     </ul>
+
     }
 }
 else

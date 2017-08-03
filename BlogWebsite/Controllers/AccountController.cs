@@ -19,36 +19,38 @@ namespace BlogWebsite.Controllers
         [HttpPost]
         public ActionResult Login(Models.LoginModel model)
         {
-            if (Membership.ValidateUser(model.Username, model.password))
+            if (Membership.ValidateUser(model.Username, model.Password))
             {
-                CreateAuthenticationToken(model);
+                FormsAuthentication.SetAuthCookie(model.Username, true);
+
+                Session["name"] = model.Username;
                 return RedirectToAction("Index","Posts");
             }
             return RedirectToAction("Login");
         }
 
-        [NonAction]
-        private void CreateAuthenticationToken(LoginModel model)
-        {
-            string userData = string.Join("|", model.Username, DateTime.Now);
+        //[NonAction]
+        //private void CreateAuthenticationToken(LoginModel model)
+        //{
+        //    string userData = string.Join("|", model.Username, DateTime.Now);
 
-            var ticket =new  FormsAuthenticationTicket(
-                 1,                                     // ticket version
-              model.Username,                              // authenticated username
-              DateTime.Now,                          // issueDate
-              DateTime.Now.AddMinutes(30),           // expiryDate
-              model.RememberMe,                          // true to persist across browser sessions
-              userData,                              // can be used to store additional user data
-              System.Web.Security.FormsAuthentication.FormsCookiePath);
+        //    var ticket =new  FormsAuthenticationTicket(
+        //         1,                                     // ticket version
+        //      model.Username,                              // authenticated username
+        //      DateTime.Now,                          // issueDate
+        //      DateTime.Now.AddMinutes(30),           // expiryDate
+        //      model.RememberMe,                          // true to persist across browser sessions
+        //      userData,                              // can be used to store additional user data
+        //      System.Web.Security.FormsAuthentication.FormsCookiePath);
 
-            string encryptedTicket = System.Web.Security.FormsAuthentication.Encrypt(ticket);
+        //    string encryptedTicket = System.Web.Security.FormsAuthentication.Encrypt(ticket);
 
-            HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName,encryptedTicket);
+        //    HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName,encryptedTicket);
 
-            cookie.HttpOnly = true;
-            Response.Cookies.Add(cookie);
+        //    cookie.HttpOnly = true;
+        //    Response.Cookies.Add(cookie);
 
-        }
+        //}
 
         // GET: Account/Register
         [HttpGet]
@@ -62,6 +64,28 @@ namespace BlogWebsite.Controllers
         {
             Membership.CreateUser(model.Username,model.Password,model.Email);
             return RedirectToAction("Login");
+        }
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index", "Posts");
+        }
+
+        public ActionResult ShowProfile()
+        {
+            MembershipUser m=Membership.GetUser(Session["name"].ToString());
+            ProfileModel user = new ProfileModel();
+            user.User = m;
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult ShowProfile(MembershipUser user)
+        {
+            Membership.UpdateUser(user);
+            return RedirectToAction("Index", "Posts");
+            
         }
 
     }

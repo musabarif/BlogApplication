@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-<table>
+<table style="margin-top:10px">
     <tr>
         <td>&nbsp; </td>
         <td style="margin-left:50px;">
@@ -21,9 +21,9 @@
 
 
 
-@foreach (var item in Model)
+@foreach (var item in Model.OrderByDescending(x => x.ID))
 {
-<div class="jumbotron">
+<div class="jumbotron" style="margin-top:10px">
     <h2>@item.Title</h2>
     <div class="row">
         <div class="col-md-8">
@@ -31,7 +31,7 @@
             @foreach (var tag in item.Tags)
             {
             <label>
-                @tag.Name |
+               @Html.ActionLink(@tag.Name,"Search","Posts", new {sr=@tag.Name}, null) |
             </label>
             }
         </div>
@@ -47,7 +47,7 @@
             <label style="font-size :smaller">Views: @item.Views</label>
         </div>
         <div class="col-md-3">
-            <label style="font-size :smaller">By: @item.Author</label>
+            <label style="font-size :smaller">Posted By: @item.Author</label>
         </div>
         <div class="col-md-6">
             <p style="text-align:right"><a href="~/Posts/Details/@item.ID" class="btn btn-primary btn-lg">View Post &raquo;</a></p>

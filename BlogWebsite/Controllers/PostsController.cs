@@ -23,8 +23,10 @@ namespace BlogWebsite.Controllers
         }
 
         // GET: Posts/Details/5
+
         public ActionResult Details(int? id)
         {
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -46,8 +48,14 @@ namespace BlogWebsite.Controllers
         }
 
         // GET: Posts/Create
+
         public ActionResult Create()
         {
+            if (!Request.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             Post _model = null;
             if (TempData.ContainsKey(PostAddModelKey))
             {
@@ -161,26 +169,33 @@ namespace BlogWebsite.Controllers
         }
 
         //[HttpPost]
-        //public ActionResult Search(string sr)
-        //{
-        //    using (var d = new ApplicationDbContext())
-        //    {
-        //        //List<Post> list = d.Database.SqlQuery<Post>($"Select * From Posts Where ID in (Select Post_ID From Tags Where Name Like '%{sr}%')").ToList<Post>();
-        //        List<Post> list = d.Posts.Where()
-        //        if (list == null)
-        //            return View("Index", db.Posts.Include(x => x.Tags).ToList());
-        //        else
-
-        //            return View("Index", list);
-        //    }
-        //}
-
-        public ActionResult Comment(string name, string comment, int Id)
+        public ActionResult Search(string sr)
         {
+            
+
+            using (var d = new ApplicationDbContext())
+            {
+                var _list = d.Posts.Where(p => p.Tags.Any(y => y.Name.Contains(sr))).Include(p => p.Tags).ToList();
+
+                if (_list == null)
+                    return View("Index", db.Posts.Include(x => x.Tags).ToList());
+                else
+                    return View("Index", _list);
+            }
+        }
+
+
+        public ActionResult Comment(string comment, int Id, string CommentTime)
+        {
+            if (!Request.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             using (var d = new ApplicationDbContext())
             {
                 int def = 0;
-                d.Database.ExecuteSqlCommand("Insert Into Comments Values('" + name + "','" + comment + "','" + Id + "','" + def + "')");
+                d.Database.ExecuteSqlCommand("Insert Into Comments Values('" + Session["name"] + "','" + comment + "','" + Id + "','" + def + "','" + CommentTime + "')");
                 Post p = db.Posts.Where(x => x.ID == Id).Include(x => x.Tags).FirstOrDefault();
                 List<Comment> com = db.Comments.Where(x => x.PostID == Id).ToList();
                 ViewModel vm = new ViewModel { post = p, comment = com };
@@ -188,11 +203,15 @@ namespace BlogWebsite.Controllers
             }
         }
 
-        public ActionResult ReplyComment(string name, string comment, int Id, int ParentID)
+        public ActionResult ReplyComment(string comment, int Id, int ParentID, string CommentTime)
         {
+            if (!Request.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             using (var d = new ApplicationDbContext())
             {
-                d.Database.ExecuteSqlCommand("Insert Into Comments Values('" + name + "','" + comment + "','" + Id + "','" + ParentID + "')");
+                d.Database.ExecuteSqlCommand("Insert Into Comments Values('" + Session["name"] + "','" + comment + "','" + Id + "','" + ParentID + "','" + CommentTime + "')");
                 Post p = db.Posts.Where(x => x.ID == Id).Include(x => x.Tags).FirstOrDefault();
                 List<Comment> com = db.Comments.Where(x => x.PostID == Id).ToList();
                 ViewModel vm = new ViewModel { post = p, comment = com };
