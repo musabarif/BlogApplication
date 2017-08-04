@@ -29,29 +29,7 @@ namespace BlogWebsite.Controllers
             return RedirectToAction("Login");
         }
 
-        //[NonAction]
-        //private void CreateAuthenticationToken(LoginModel model)
-        //{
-        //    string userData = string.Join("|", model.Username, DateTime.Now);
-
-        //    var ticket =new  FormsAuthenticationTicket(
-        //         1,                                     // ticket version
-        //      model.Username,                              // authenticated username
-        //      DateTime.Now,                          // issueDate
-        //      DateTime.Now.AddMinutes(30),           // expiryDate
-        //      model.RememberMe,                          // true to persist across browser sessions
-        //      userData,                              // can be used to store additional user data
-        //      System.Web.Security.FormsAuthentication.FormsCookiePath);
-
-        //    string encryptedTicket = System.Web.Security.FormsAuthentication.Encrypt(ticket);
-
-        //    HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName,encryptedTicket);
-
-        //    cookie.HttpOnly = true;
-        //    Response.Cookies.Add(cookie);
-
-        //}
-
+        
         // GET: Account/Register
         [HttpGet]
         public ActionResult Register()
@@ -72,20 +50,29 @@ namespace BlogWebsite.Controllers
             return RedirectToAction("Index", "Posts");
         }
 
-        public ActionResult ShowProfile()
+        public ActionResult ShowProfile(string name)
         {
-            MembershipUser m=Membership.GetUser(Session["name"].ToString());
-            ProfileModel user = new ProfileModel();
-            user.User = m;
-            return View(user);
+            var user = Membership.GetUser(name);
+            RegisterModel r = new RegisterModel();
+            r.Email = user.Email;
+            r.Username = user.UserName;
+
+            if (User.Identity.Name == name)
+                return View(r);
+            else
+                return View("Display", r);
+            
         }
 
         [HttpPost]
-        public ActionResult ShowProfile(MembershipUser user)
+        public ActionResult ShowProfile(RegisterModel model)
         {
+            var user = Membership.GetUser(User.Identity.Name);
+            user.Email = model.Email;
+
             Membership.UpdateUser(user);
             return RedirectToAction("Index", "Posts");
-            
+
         }
 
     }

@@ -26,7 +26,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10 display">
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control",@readonly = "readonly" } })
                     @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -35,7 +35,7 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-10">
 
-                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    @Html.ActionLink("Back","Index","Posts", null, new { @class = "btn btn-primary" })
                 </div>
             </div>
 

@@ -8,7 +8,8 @@
 <h2>Create</h2>
 
 <script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
-<script> tinymce.init({
+<script>
+ tinymce.init({
         selector: 'textarea',
         encoding: 'xml'
     }); </script>
@@ -25,15 +26,15 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Title, new {htmlAttributes = new { @class = "form-control", @style = "width:500px "} })
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", @style = "width:500px " } })
                 @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group" >
+        <div class="form-group">
             @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Text, new { @style="width:280px;height:200px"  })
+                @Html.TextAreaFor(model => model.Text, new { @style = "width:280px;height:200px" })
                 @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -49,15 +50,20 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Author, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @*@{ 
-                    BlogWebsite.Models.ApplicationUser _user;
-                    using (var db = new BlogWebsite.Models.ApplicationDbContext())
-                    {
-                        var _username = User.Identity.GetUserName();
-                        _user = db.Users.FirstOrDefault(uS => uS.UserName == _username);
-                    }
-                }*@
-                @Html.EditorFor(model => model.Author, new {htmlAttributes = new { @class = "form-control", @*@Value = _user.Name*@ } })
+                @*@{
+                        BlogWebsite.Models.ApplicationUser _user;
+                        using (var db = new BlogWebsite.Models.ApplicationDbContext())
+                        {
+                            var _username = User.Identity.GetUserName();
+                            _user = db.Users.FirstOrDefault(uS => uS.UserName == _username);
+                        }
+                    }*@
+                @Html.EditorFor(model => model.Author, new
+           {
+               htmlAttributes = new
+               {
+                   @class = "form-control", @*@Value = _user.Name*@ }
+           })
                 @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -75,7 +81,7 @@
                 <input type="submit" value="Add" class="btn btn-primary" formaction="@Url.Action("AddTag")" formmethod="post" />
             </div>
         </div>
-        
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

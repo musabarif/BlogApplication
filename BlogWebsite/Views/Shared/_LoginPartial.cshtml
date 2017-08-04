@@ -3,16 +3,16 @@
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-          @Html.ActionLink(string.Format("Welcome ! {0}",Session["name"]),"ShowProfile","Account")
-        </li>
-        <li>
-            @Html.ActionLink("Logout","Logout","Account")
-        </li>
-    </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @Html.ActionLink(string.Format("Welcome ! {0}", Session["name"]), "ShowProfile", "Account", new { name = User.Identity.Name }, null)
+            </li>
+            <li>
+                @Html.ActionLink("Logout", "Logout", "Account")
+            </li>
+        </ul>
 
     }
 }

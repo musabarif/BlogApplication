@@ -23,7 +23,7 @@
     </div>
     <div class="row" style="margin-top: 50px">
         <div class="col-md-6">
-            <label>By : @Model.post.Author</label>
+            <label>Posted By : @Html.ActionLink(@Model.post.Author, "ShowProfile", "Account", new { name = @Model.post.Author }, null)</label>
         </div>
         <div class="col-md-6">
             <p style="text-align:right"><a href="~/Posts/Index" class="btn btn-primary btn-lg">Back &raquo;</a></p>
