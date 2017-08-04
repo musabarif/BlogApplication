@@ -43,10 +43,13 @@
             <p class="lead">@item.Text.Substring(0, 100)...</p>
         </div>
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label style="font-size :smaller">Views: @item.Views</label>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <label style="font-size :smaller">Votes: @item.Votes</label>
+            </div>
+            <div class="col-md-2">
                 <label style="font-size :smaller">Posted By: @Html.ActionLink(@item.Author, "ShowProfile", "Account", new { name = @item.Author }, null)</label>
             </div>
             <div class="col-md-6">

@@ -14,6 +14,7 @@ namespace BlogWebsite.Models
         public List<Tag> Tags { get; set; }
         public string Author { get; set; }
         public int Views { get; set; }
+        public int Votes { get; set; }
 
         public Post()
         {
