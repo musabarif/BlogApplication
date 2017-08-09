@@ -194,12 +194,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Author.cs" />
     <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\Followers.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ImageModel.cs" />
     <Compile Include="Models\IndexModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\Post.cs" />
-    <Compile Include="Models\ProfileModel.cs" />
+    <Compile Include="Models\ProfileView.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\ViewModel.cs" />
@@ -213,7 +216,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="image\Like1.jpg" />
+    <Content Include="image\profile-default-male.png" />
     <Content Include="image\tag.png" />
+    <Content Include="image\unlike1.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">

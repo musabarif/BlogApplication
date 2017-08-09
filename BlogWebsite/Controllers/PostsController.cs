@@ -109,7 +109,7 @@ namespace BlogWebsite.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Post post = db.Posts.Find(id);
+            Post post = db.Posts.Include(x => x.Tags).FirstOrDefault();
             if (post == null)
             {
                 return HttpNotFound();
@@ -153,7 +153,7 @@ namespace BlogWebsite.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Post post = db.Posts.Find(id);
+            Post post = db.Posts.Include(x => x.Tags).FirstOrDefault();
             db.Posts.Remove(post);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -175,6 +175,8 @@ namespace BlogWebsite.Controllers
 
             using (var d = new ApplicationDbContext())
             {
+                
+
                 var _list = d.Posts.Where(p => p.Tags.Any(y => y.Name.Contains(sr))).Include(p => p.Tags).ToList();
 
                 if (_list == null)
@@ -215,6 +217,29 @@ namespace BlogWebsite.Controllers
                 Post p = db.Posts.Where(x => x.ID == Id).Include(x => x.Tags).FirstOrDefault();
                 List<Comment> com = db.Comments.Where(x => x.PostID == Id).ToList();
                 ViewModel vm = new ViewModel { post = p, comment = com };
+                return View("Details", vm);
+            }
+        }
+
+        public ActionResult Like(int id,string vote)
+        {
+            if (!Request.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            using (var d = new ApplicationDbContext())
+            {
+                Post p=d.Posts.Where(x => x.ID == id).Include(x => x.Tags).FirstOrDefault();
+                if (vote == "Upvote")
+                    p.Votes +=1;
+                else
+                    p.Votes -=1;
+                d.SaveChangesAsync();
+               
+                List<Comment> com = db.Comments.Where(x => x.PostID == id).ToList();
+                ViewModel vm = new ViewModel { post = p, comment = com };
+                ViewBag.upvote = "disabled";
                 return View("Details", vm);
             }
         }

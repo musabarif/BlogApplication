@@ -42,6 +42,7 @@
         <div class="row">
             <p class="lead">@item.Text.Substring(0, 100)...</p>
         </div>
+
         <div class="row">
             <div class="col-md-2">
                 <label style="font-size :smaller">Views: @item.Views</label>
@@ -49,12 +50,18 @@
             <div class="col-md-2">
                 <label style="font-size :smaller">Votes: @item.Votes</label>
             </div>
-            <div class="col-md-2">
-                <label style="font-size :smaller">Posted By: @Html.ActionLink(@item.Author, "ShowProfile", "Account", new { name = @item.Author }, null)</label>
+            <div class="col-md-4">
+                <label style="font-size :smaller">Posted By:@Html.ActionLink(@item.Author, "ShowProfile", "Account", new { name = @item.Author }, null)</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <p style="text-align:right"><a href="~/Posts/Details/@item.ID" class="btn btn-primary btn-lg">View Post &raquo;</a></p>
             </div>
         </div>
     </div>
 }
+
+<style type="text/css">
+    .jumbotron {
+        padding: 0.5em 0.6em;
+    }
+</style>

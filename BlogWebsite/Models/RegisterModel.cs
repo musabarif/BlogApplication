@@ -26,7 +26,9 @@ namespace BlogWebsite.Models
         public string ConfirmPassword { get; set; }
 
         public string SecurityQuestion { get; set; }
+        public string SecurityAnswer { get; set; }
 
-        public string SecurityAnswer{ get; set; }
+       
+
     }
 }

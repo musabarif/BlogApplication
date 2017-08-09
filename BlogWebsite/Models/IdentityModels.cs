@@ -35,6 +35,8 @@ namespace BlogWebsite.Models
         public System.Data.Entity.DbSet<BlogWebsite.Models.Post> Posts { get; set; }
         public System.Data.Entity.DbSet<BlogWebsite.Models.Tag> Tags { get; set; }
         public System.Data.Entity.DbSet<BlogWebsite.Models.Comment> Comments { get; set; }
-
+        public System.Data.Entity.DbSet<BlogWebsite.Models.ImageModel> Image { get; set; }
+        public System.Data.Entity.DbSet<BlogWebsite.Models.Followers> Followers { get; set; }
+        public System.Data.Entity.DbSet<BlogWebsite.Models.Author> Authors { get; set; }
     }
 }
