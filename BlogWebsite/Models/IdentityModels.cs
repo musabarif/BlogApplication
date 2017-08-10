@@ -38,5 +38,6 @@ namespace BlogWebsite.Models
         public System.Data.Entity.DbSet<BlogWebsite.Models.ImageModel> Image { get; set; }
         public System.Data.Entity.DbSet<BlogWebsite.Models.Followers> Followers { get; set; }
         public System.Data.Entity.DbSet<BlogWebsite.Models.Author> Authors { get; set; }
+        public System.Data.Entity.DbSet<BlogWebsite.Models.Like> Like { get; set; }
     }
 }

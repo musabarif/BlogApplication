@@ -7,7 +7,9 @@
 
         <ul class="nav navbar-nav navbar-right">
             <li>
+               
                 @Html.ActionLink(string.Format("Welcome ! {0}", Session["name"]), "ShowProfile", "Account", new { name = User.Identity.Name }, null)
+               
             </li>
             <li>
                 @Html.ActionLink("Logout", "Logout", "Account")

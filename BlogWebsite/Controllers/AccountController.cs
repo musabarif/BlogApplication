@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Data.Entity;
 
 namespace BlogWebsite.Controllers
 {
@@ -56,7 +57,7 @@ namespace BlogWebsite.Controllers
             return RedirectToAction("Index", "Posts");
         }
 
-        public ActionResult ShowProfile(string name)
+        public ActionResult ShowProfile(string name, string follow = " ")
         {
             var user = Membership.GetUser(name);
             ProfileView profile = new ProfileView();
@@ -65,16 +66,25 @@ namespace BlogWebsite.Controllers
             r.Email = user.Email;
             r.Username = user.UserName;
             profile.Register = r;
+            ViewBag.follow = follow;
             using (var d = new ApplicationDbContext())
             {
                 var image = d.Image.FirstOrDefault(x => x.Username == name);
                 if (image == null)
-                { ViewBag.profile = "default";}
+                { ViewBag.profile = "default"; }
                 else
-                { ViewBag.profile = "profile";}
+                { ViewBag.profile = "profile"; }
                 var auth = d.Authors.FirstOrDefault(x => x.Username == name);
+                var post = d.Posts.Where(x => x.Author == name).Count();
+
+                author.Posts = post;
                 if (auth != null)
                 {
+                    auth.Views = auth.Views + 1;
+                    d.Entry(auth).State = EntityState.Modified;
+                    d.SaveChanges();
+                    author.Views = auth.Views;
+                    author.Followers = auth.Followers;
                     if (auth.Fullname != null)
                         author.Fullname = auth.Fullname;
                     if (auth.Expertise != null)
@@ -82,12 +92,15 @@ namespace BlogWebsite.Controllers
                     if (auth.About != null)
                         author.About = auth.About;
                     profile.Author = author;
+
                 }
                 else
                 {
                     author.About = "Apparently, this user prefers to keep an air of mystery about them.";
                     profile.Author = author;
                 }
+
+
             }
             if (User.Identity.Name == name)
                 return View(profile);
@@ -177,23 +190,37 @@ namespace BlogWebsite.Controllers
             return ms.ToArray();
         }
 
-        public ActionResult Follow(string Follower,string Leader)
+        public ActionResult Follow(string Follower, string Leader)
         {
             if (!Request.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account");
             }
+            var display = " ";
             using (var d = new ApplicationDbContext())
             {
-                var follower = d.Authors.FirstOrDefault(x => x.Username==Follower);
-                var leader = d.Authors.FirstOrDefault(x =>x.Username==Leader);
-                Followers folwrs = new Followers();
-                folwrs.Follower = follower.ID;
-                folwrs.Leader = leader.ID;
-                d.Followers.Add(folwrs);
-                d.SaveChanges();
+
+                var follower = d.Authors.FirstOrDefault(x => x.Username == Follower);
+                var leader = d.Authors.FirstOrDefault(x => x.Username == Leader);
+                var already = d.Followers.Where(x => x.Leader == leader.ID && (x.Follower == follower.ID)).Any();
+                if (!already)
+                {
+                    leader.Followers = leader.Followers + 1;
+                    d.Entry(leader).State = EntityState.Modified;
+                    d.SaveChanges();
+                    Followers folwrs = new Followers();
+                    folwrs.Follower = follower.ID;
+                    folwrs.Leader = leader.ID;
+                    d.Followers.Add(folwrs);
+                    d.SaveChanges();
+                    display = string.Format("You are Now Following {0}", Leader);
+                }
+                else
+                {
+                    display = string.Format("You are already Following {0}", Leader);
+                }
             }
-                return RedirectToAction("ShowProfile", "Account",new { name=Leader});
+            return RedirectToAction("ShowProfile", "Account", new { name = Leader, follow = display });
         }
     }
 }

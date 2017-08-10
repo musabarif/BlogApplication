@@ -171,12 +171,8 @@ namespace BlogWebsite.Controllers
         //[HttpPost]
         public ActionResult Search(string sr)
         {
-            
-
             using (var d = new ApplicationDbContext())
             {
-                
-
                 var _list = d.Posts.Where(p => p.Tags.Any(y => y.Name.Contains(sr))).Include(p => p.Tags).ToList();
 
                 if (_list == null)
@@ -193,7 +189,6 @@ namespace BlogWebsite.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-
             using (var d = new ApplicationDbContext())
             {
                 int def = 0;
@@ -221,30 +216,50 @@ namespace BlogWebsite.Controllers
             }
         }
 
-        public ActionResult Like(int id,string vote)
+        public PartialViewResult Like(int id, string vote)
         {
-            if (!Request.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
 
             using (var d = new ApplicationDbContext())
             {
-                Post p=d.Posts.Where(x => x.ID == id).Include(x => x.Tags).FirstOrDefault();
-                if (vote == "Upvote")
-                    p.Votes +=1;
+                Post p = d.Posts.Where(x => x.ID == id).Include(x => x.Tags).FirstOrDefault();
+                Like like = new Like();
+                var ldetails = d.Like.FirstOrDefault(x => x.Username == User.Identity.Name);
+                if (ldetails == null)
+                {
+                    like.Post_ID = id;
+                    like.Username = User.Identity.Name;
+                    if (vote == "Upvote")
+                    {
+                        p.Votes += 1;
+                        like.Vote = 1;
+                    }
+                    else
+                    {
+                        p.Votes -= 1;
+                        like.Vote = -1;
+                    }
+                    d.Like.Add(like);
+                    d.SaveChanges();
+                }
                 else
-                    p.Votes -=1;
-                d.SaveChangesAsync();
-               
-                List<Comment> com = db.Comments.Where(x => x.PostID == id).ToList();
-                ViewModel vm = new ViewModel { post = p, comment = com };
-                ViewBag.upvote = "disabled";
-                return View("Details", vm);
+                {
+                    if (vote == "Upvote")
+                    {
+                        p.Votes += 1;
+                        ldetails.Vote += 1;
+                    }
+                    else
+                    {
+                        p.Votes -= 1;
+                        ldetails.Vote -= 1;
+                    }
+                    d.SaveChanges();
+                }
+                d.SaveChanges();
+                ViewBag.vote = p.Votes;
+                return PartialView();
             }
         }
-
-
 
     }
 }

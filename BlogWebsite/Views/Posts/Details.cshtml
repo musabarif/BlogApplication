@@ -22,21 +22,26 @@
         <div class="col-md-12"><p style="font-size:large">@Model.post.Text</p></div>
     </div>
     <div class="row" style="margin-top: 50px">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label>Posted By : @Html.ActionLink(@Model.post.Author, "ShowProfile", "Account", new { name = @Model.post.Author }, null)</label>
         </div>
-        <div class="col-md-3">
-            <a href='@Url.Action("Like", "Posts",new {id=Model.post.ID,vote="Upvote" })' class=@ViewBag.upvote >
-            <img src="~/image/Like1.jpg" height="50" width="50"  />
-            </a>
+        <div class="col-md-8" style="display:inline">
 
-            <label>@Model.post.Votes</label>
-            <a href='@Url.Action("Like", "Posts",new { id=Model.post.ID,vote="Downvote"})' class=@ViewBag.upvote>
-                <img src="~/image/unlike1.jpg" height="50" width="50" />
-            </a>
+            @if (Context.User.Identity.IsAuthenticated && User.Identity.Name!=Model.post.Author)
+            {
+                using (Ajax.BeginForm("Like", "Posts", new { id = Model.post.ID, vote = "Upvote" }, new AjaxOptions { UpdateTargetId = "Vote", HttpMethod = "GET", InsertionMode = InsertionMode.Replace, OnComplete = "deactive1" }, new { @style = "display:inline-block" }))
+                {
+                    <input type="image" style="height:50px" src="~/image/Like1.jpg" id="upvote" >
+                }
+                <label id="Vote" styrole="display:inline-block">@Model.post.Votes</label>
+                using (Ajax.BeginForm("Like", "Posts", new { id = Model.post.ID, vote = "Downvote" }, new AjaxOptions { UpdateTargetId = "Vote", HttpMethod = "GET", InsertionMode = InsertionMode.Replace, OnComplete = "deactive2" }, new { @style = "display:inline-block" }))
+                {
+                    <input type="image" style="height:50px" src="~/image/unlike1.jpg" id="downvote">
+                }
+            }
 
-            </div>
-        <div class="col-md-6">
+        </div>
+        <div class="col-md-2">
             <p style="text-align:right"><a href="~/Posts/Index" class="btn btn-primary btn-lg">Back &raquo;</a></p>
         </div>
     </div>
@@ -92,12 +97,6 @@
                                 <div class="panel-heading">
                                     <label>Reply To This Comment</label><br />
                                     <form action="~/Posts/ReplyComment" method="post" class="form-horizontal">
-                                        @*<div class="form-group">
-                                                <label class="control-label col-sm-2">Name:</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
-                                                </div>
-                                            </div>*@
                                         <div class="form-group">
                                             <label class="control-label col-sm-2">Comment:</label>
                                             <div class="col-sm-10">
@@ -178,6 +177,7 @@
 </div>
 
 <script type="text/javascript" src="~/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -185,13 +185,21 @@
             e.preventDefault();
             $('.ReplyForm').toggle();
         });
-        $('.disabled').click(function (e) {
+
+        $('.upvote').click(function (e) {
             e.preventDefault();
         });
+
     });
+    function deactive1()
+    {
+        $("#upvote").attr("disabled", true);
+    }
+    function deactive2() {
+        $("#downvote").attr("disabled", true);
+    }
 
 
-    
 </script>
 
 

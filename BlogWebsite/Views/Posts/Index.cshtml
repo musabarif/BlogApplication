@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Index";
 }
-
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 <table style="margin-top:10px">
     <tr>
         <td>&nbsp; </td>
@@ -27,16 +27,17 @@
         <h2>@item.Title</h2>
         <div class="row">
             <div class="col-md-8">
-                <img src="~/image/tag.png" height="20" width="20" />
+               
                 @foreach (var tag in item.Tags)
                 {
                     <label>
+                        <i class="fa fa-tags" aria-hidden="true"></i>
                         @Html.ActionLink(@tag.Name, "Search", "Posts", new { sr = @tag.Name }, null) |
                     </label>
                 }
             </div>
             <div class="col-md-4">
-                <label>@item.Date</label>
+                <i class="fa fa-calendar" aria-hidden="true"></i> <label>@item.Date</label>
             </div>
         </div>
         <div class="row">
@@ -46,9 +47,14 @@
         <div class="row">
             <div class="col-md-2">
                 <label style="font-size :smaller">Views: @item.Views</label>
+                <i class="fa fa-eye" aria-hidden="true"></i>
             </div>
             <div class="col-md-2">
-                <label style="font-size :smaller">Votes: @item.Votes</label>
+              
+                <label style="font-size :smaller">Votes:
+                    <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                @item.Votes</label>
+                
             </div>
             <div class="col-md-4">
                 <label style="font-size :smaller">Posted By:@Html.ActionLink(@item.Author, "ShowProfile", "Account", new { name = @item.Author }, null)</label>
