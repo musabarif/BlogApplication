@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using BlogWebsite.Models;
+using System.Text.RegularExpressions;
 
 namespace BlogWebsite.Controllers
 {
@@ -19,7 +20,14 @@ namespace BlogWebsite.Controllers
         // GET: Posts
         public ActionResult Index()
         {
-            return View(db.Posts.Include(x => x.Tags).ToList());
+            List<Post> post = db.Posts.Include(x => x.Tags).ToList();
+            foreach (var item in post)
+            {
+                item.Text = HttpUtility.HtmlDecode(item.Text);
+                Regex.Replace(item.Text, @"\s+", " ");
+                item.Text.Trim();
+            }
+            return View(post);
         }
 
         // GET: Posts/Details/5
@@ -32,6 +40,8 @@ namespace BlogWebsite.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Post post = db.Posts.Where(x => x.ID == id).Include(x => x.Tags).FirstOrDefault();
+            post.Text = HttpUtility.HtmlDecode(post.Text);
+
             post.Views = post.Views + 1;
             db.Entry(post).State = EntityState.Modified;
             db.SaveChanges();
@@ -40,6 +50,7 @@ namespace BlogWebsite.Controllers
                 return HttpNotFound();
             }
 
+            Session["ReplyForm"] = "false";
 
             List<Comment> com = db.Comments.Where(x => x.PostID == id).ToList();
 
@@ -93,6 +104,7 @@ namespace BlogWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
+                post.Text = HttpUtility.HtmlEncode(post.Text);
 
                 db.Posts.Add(post);
                 db.SaveChanges();
@@ -182,25 +194,24 @@ namespace BlogWebsite.Controllers
             }
         }
 
+        //public ActionResult Comment(string comment, int Id, string CommentTime)
+        //{
+        //    if (!Request.IsAuthenticated)
+        //    {
+        //        return RedirectToAction("Login", "Account");
+        //    }
+        //    using (var d = new ApplicationDbContext())
+        //    {
+        //        int def = 0;
+        //        d.Database.ExecuteSqlCommand("Insert Into Comments Values('" + Session["name"] + "','" + comment + "','" + Id + "','" + def + "','" + CommentTime + "')");
+        //        Post p = db.Posts.Where(x => x.ID == Id).Include(x => x.Tags).FirstOrDefault();
+        //        List<Comment> com = db.Comments.Where(x => x.PostID == Id).ToList();
+        //        ViewModel vm = new ViewModel { post = p, comment = com };
+        //        return View("Details", vm);
+        //    }
+        //}
 
-        public ActionResult Comment(string comment, int Id, string CommentTime)
-        {
-            if (!Request.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            using (var d = new ApplicationDbContext())
-            {
-                int def = 0;
-                d.Database.ExecuteSqlCommand("Insert Into Comments Values('" + Session["name"] + "','" + comment + "','" + Id + "','" + def + "','" + CommentTime + "')");
-                Post p = db.Posts.Where(x => x.ID == Id).Include(x => x.Tags).FirstOrDefault();
-                List<Comment> com = db.Comments.Where(x => x.PostID == Id).ToList();
-                ViewModel vm = new ViewModel { post = p, comment = com };
-                return View("Details", vm);
-            }
-        }
-
-        public ActionResult ReplyComment(string comment, int Id, int ParentID, string CommentTime)
+        public ActionResult Comment(string comment, int Id, string CommentTime, int ParentID = 0)
         {
             if (!Request.IsAuthenticated)
             {
@@ -243,15 +254,29 @@ namespace BlogWebsite.Controllers
                 }
                 else
                 {
-                    if (vote == "Upvote")
+                    if (vote == "Upvote" && ldetails.Vote == -1)
                     {
                         p.Votes += 1;
                         ldetails.Vote += 1;
+                        ldetails.Flag = -1;
                     }
-                    else
+                    if (vote == "Downvote" && ldetails.Vote == 1)
                     {
                         p.Votes -= 1;
                         ldetails.Vote -= 1;
+                        ldetails.Flag = 1;
+                    }
+                    if (vote == "Upvote" && ldetails.Vote == 0 && ldetails.Flag == 1)
+                    {
+                        p.Votes += 1;
+                        ldetails.Vote += 1;
+                        ldetails.Flag = 0;
+                    }
+                    if (vote == "Downvote" && ldetails.Vote == 0 && ldetails.Flag == -1)
+                    {
+                        p.Votes -= 1;
+                        ldetails.Vote -= 1;
+                        ldetails.Flag = 0;
                     }
                     d.SaveChanges();
                 }
@@ -259,6 +284,19 @@ namespace BlogWebsite.Controllers
                 ViewBag.vote = p.Votes;
                 return PartialView();
             }
+        }
+
+        public PartialViewResult ReplyForm(int ID, int PostID)
+        {
+            Comment comment = new Comment();
+            comment.ID = ID;
+            comment.PostID = PostID;
+            if (Session["ReplyForm"].ToString() == "false")
+                Session["ReplyForm"] = "true";
+            else
+                Session["ReplyForm"] = "false";
+
+            return PartialView(comment);
         }
 
     }

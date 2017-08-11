@@ -11,5 +11,6 @@ namespace BlogWebsite.Models
         public int Post_ID { get; set; }
         public string Username { get; set; }
         public int Vote { get; set; }
+        public int Flag { get; set; }
     }
 }

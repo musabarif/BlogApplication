@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="row">
-            <p class="lead">@item.Text.Substring(0, 100)...</p>
+            <p class="lead">@Html.Raw(@item.Text.Substring(0,item.Text.IndexOf("<pre")))</p>
         </div>
 
         <div class="row">

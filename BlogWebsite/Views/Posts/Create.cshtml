@@ -7,14 +7,24 @@
 
 <h2>Create</h2>
 
-@*<script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>*@
-@*<script type="text/javascript">
- tinymce.init({
+<script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=m1q7vm0skkqmhhq5yxlrzeeyaubshs0o5pmajkj4tlq482lh"></script>
+<script>tinymce.init({
         selector: 'textarea',
-        //encoding: 'xml'
-    }); 
-</script>*@
-
+        plugins: "codesample",
+        codesample_languages: [
+            { text: 'HTML/XML', value: 'markup' },
+            { text: 'JavaScript', value: 'javascript' },
+            { text: 'CSS', value: 'css' },
+            { text: 'PHP', value: 'php' },
+            { text: 'Ruby', value: 'ruby' },
+            { text: 'Python', value: 'python' },
+            { text: 'Java', value: 'java' },
+            { text: 'C', value: 'c' },
+            { text: 'C#', value: 'csharp' },
+            { text: 'C++', value: 'cpp' }
+        ],
+        toolbar: 'codesample'
+});</script>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -35,7 +45,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Text, new { htmlAttributes = new { @class = "form-control"} })
+                @Html.TextAreaFor(model => model.Text, new { @style="width:500px"})
                 @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -59,12 +69,7 @@
                             _user = db.Users.FirstOrDefault(uS => uS.UserName == _username);
                         }
                     }*@
-                @Html.EditorFor(model => model.Author, new
-           {
-               htmlAttributes = new
-               {
-                   @class = "form-control", @*@Value = _user.Name*@ }
-           })
+                @Html.EditorFor(model => model.Author, new{htmlAttributes = new{@class = "form-control", @Value =User.Identity.Name, @readonly="readonly" }})
                 @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -99,3 +104,5 @@
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/prism.css">
+<script src="~/Scripts/prism.js"></script>
