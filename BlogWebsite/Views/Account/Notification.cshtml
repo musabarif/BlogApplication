@@ -1,0 +1,19 @@
+﻿@model IEnumerable<BlogWebsite.Models.Notifications>
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<h2>Notifications</h2>
+
+@foreach (var item in Model.Where(x =>x.Flag!=1))
+{
+    <div class="alert alert-info alert-dismissable">
+        <a href='@Url.Action("DisableNotification","Account",new { id=item.ID})' class="close" data-dismiss="alert" aria-label="close">×</a>
+        <strong>@item.Name</strong>&nbsp;@item.Action On Your Post .@Html.ActionLink("Link","Details","Posts",new { id=@item.Post_ID},null)
+    </div>
+}
+
+

@@ -19,15 +19,20 @@
     </tr>
 </table>
 
-
-
 @foreach (var item in Model.OrderByDescending(x => x.ID))
 {
     <div class="jumbotron" style="margin-top:10px">
-        <h2>@item.Title</h2>
+        <h8 style="font-weight:bold">
+            @if (item.Title.Length < 100)
+            {
+                @item.Title
+            }
+            else
+            {@item.Title.Substring(0, 100)
+            }
+        </h8>
         <div class="row">
             <div class="col-md-8">
-               
                 @foreach (var tag in item.Tags)
                 {
                     <label>
@@ -41,7 +46,15 @@
             </div>
         </div>
         <div class="row">
-            <p class="lead">@Html.Raw(@item.Text.Substring(0,item.Text.IndexOf("<pre")))</p>
+            <p class="lead">
+                @if (item.Text.Length < 200)
+                {@Html.Raw(item.Text)
+                }
+                else
+                {
+                    @Html.Raw(@item.Text.Substring(0, 200))
+                }
+            </p>
         </div>
 
         <div class="row">
@@ -50,14 +63,30 @@
                 <i class="fa fa-eye" aria-hidden="true"></i>
             </div>
             <div class="col-md-2">
-              
-                <label style="font-size :smaller">Votes:
+                <label style="font-size :smaller">
+                    Votes:
                     <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                @item.Votes</label>
-                
+                    @item.Votes
+                </label>
             </div>
             <div class="col-md-4">
-                <label style="font-size :smaller">Posted By:@Html.ActionLink(@item.Author, "ShowProfile", "Account", new { name = @item.Author }, null)</label>
+                <label style="font-size :smaller">
+                    Posted By:
+                    @{ 
+                        var d = new BlogWebsite.Models.ApplicationDbContext();
+                        var exist=d.Image.Where(x => x.Username == item.Author);
+                    }
+                    @if (exist.Count()!=0)
+                    {
+                     <a href="@Url.Action("ShowProfile", "Account", new { name = @item.Author })"><img src="@Url.Action("GetImage", "Account", new {Username=@item.Author})" style="width:50px;height:50px" /> </a>
+                    }
+                    else
+                    {
+                         <a href="@Url.Action("ShowProfile", "Account", new { name = @item.Author })"><img src="~/image/profile-default-male.png" style="width:50px;height:50px" /></a>
+                    }
+
+                    @Html.ActionLink(@item.Author, "ShowProfile", "Account", new { name = @item.Author }, null)
+                </label>
             </div>
             <div class="col-md-4">
                 <p style="text-align:right"><a href="~/Posts/Details/@item.ID" class="btn btn-primary btn-lg">View Post &raquo;</a></p>
@@ -65,7 +94,6 @@
         </div>
     </div>
 }
-
 <style type="text/css">
     .jumbotron {
         padding: 0.5em 0.6em;

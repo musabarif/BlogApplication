@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Details";
 }
-
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 <h1>@Model.post.Title</h1>
 <div style="margin-top: 50px">
     <div class="row">
@@ -15,15 +15,17 @@
             }
         </div>
         <div class="col-md-4">
-            <label>@Model.post.Date</label>
+            <i class="fa fa-calendar" aria-hidden="true"></i><label>@Model.post.Date</label>
         </div>
     </div>
     <div class="row" style="margin-top: 50px">
-        <div class="col-md-12"><p style="font-size:large">@Html.Raw(Model.post.Text.Substring(0,Model.post.Text.IndexOf("<pre")))</p></div>
-        <pre class="language-javascript"><code>@Model.post.Text.Substring(Model.post.Text.IndexOf("<code>"), Model.post.Text.IndexOf("pub"))</code></pre>
+        @Html.Raw(Model.post.Text)
+        @*<div class="col-md-12"><p style="font-size:large">@Html.Raw(Model.post.Text.Substring(0,Model.post.Text.IndexOf("<pre")))</p></div>
+            <pre class="language-javascript"><code>@Model.post.Text.Substring(Model.post.Text.IndexOf("<code>"), Model.post.Text.IndexOf("pub"))</code></pre>*@
     </div>
     <div class="row" style="margin-top: 50px">
         <div class="col-md-2">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
             <label>Posted By : @Html.ActionLink(@Model.post.Author, "ShowProfile", "Account", new { name = @Model.post.Author }, null)</label>
         </div>
         <div class="col-md-8" style="display:inline">
@@ -33,12 +35,18 @@
                 {
                     <input type="image" style="height:50px" src="~/image/Like1.jpg">
                 }
-                <label id="Vote" styrole="display:inline-block">@Model.post.Votes</label>
+                <div id="Vote" style="display:inline;font-weight:bold">@Model.post.Votes</div>
                 using (Ajax.BeginForm("Like", "Posts", new { id = Model.post.ID, vote = "Downvote" }, new AjaxOptions { UpdateTargetId = "Vote", HttpMethod = "GET", InsertionMode = InsertionMode.Replace, OnComplete = "deactive2" }, new { @style = "display:inline-block" }))
                 {
                     <input type="image" style="height:50px" src="~/image/unlike1.jpg">
                 }
+                @*<label>
+                    @{ var url = HttpContext.Current.Request.Url.AbsoluteUri;}
+
+                    <a href="http://www.facebook.com/sharer.php?u=@url" title="Share on facebook" target="_blank">Share on facebook</a>
+                    </label>*@
             }
+
         </div>
         <div class="col-md-2">
             <p style="text-align:right"><a href="~/Posts/Index" class="btn btn-primary btn-lg">Back &raquo;</a></p>
@@ -58,20 +66,56 @@
                     <div class="panel-heading">
                         <div class="" style="padding-top:5px;display:inline">
                             <div style="padding-top:5px">
-                                <label style="">@i.Name : @i.Comments</label>
-                                &nbsp;&nbsp;
-                                On : @i.CommentTime
+                                <div class="col-md-1">
+                                    @{
+                                        var d = new BlogWebsite.Models.ApplicationDbContext();
+                                        var exist = d.Image.Where(x => x.Username == i.Name);
+                                    }
+                                    @if (exist.Count() != 0)
+                                    {
+                                        <a href="@Url.Action("ShowProfile", "Account", new { name = @i.Name })"><img src="@Url.Action("GetImage", "Account", new {Username=@i.Name})" style="width:50px;height:50px" /> </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("ShowProfile", "Account", new { name = @i.Name })"><img src="~/image/profile-default-male.png" style="width:50px;height:50px" /></a>
+                                    }
+                                </div>
+                                <div class="col-md-11">
+                                    <label style="">@i.Name : @i.Comments</label>
+                                    &nbsp;&nbsp;
+                                    On : @i.CommentTime
+                                </div>
+
                             </div>
                         </div>
                         @foreach (var m in Model.comment.Where(x => x.ParentID == i.ID))
                         {
+                            <div style="padding-top:5px;margin-left:80px;padding-top:10px">
+                                
+                                <div>
+                                    @{
+                                        var d1 = new BlogWebsite.Models.ApplicationDbContext();
+                                        var exist1 = d.Image.Where(x => x.Username == m.Name);
+                                    }
+                                    @if (exist1.Count() != 0)
+                                    {
+                                        <a href="@Url.Action("ShowProfile", "Account", new { name = @m.Name })"><img src="@Url.Action("GetImage", "Account", new {Username=@m.Name})" style="width:50px;height:50px" /> </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("ShowProfile", "Account", new { name = @m.Name })"><img src="~/image/profile-default-male.png" style="width:50px;height:50px" /></a>
+                                    }
+                                </div>
 
-                            <div style="padding-top:5px;margin-left:50px">
-                                <label> @m.Name :@m.Comments</label>
-                                &nbsp;&nbsp;
-                                On:@m.CommentTime
+                                <div class="">
+                                    <label> @m.Name :@m.Comments</label>
+                                    &nbsp;&nbsp;
+                                    On:@m.CommentTime
+                                </div>
+                               
+
                             </div>
-                        }
+                          }
                         <dl>
                             <dt style="padding-top:2px;margin-left:100px">
                                 @*<a href="#" class="Reply">Reply</a>*@
@@ -82,9 +126,9 @@
                     </div>
                 </div>
             </div>
-        }
+                                        }
     </div>
-}
+                                        }
 <div class="container">
     <div class="panel panel-info">
         <div class="panel-heading">

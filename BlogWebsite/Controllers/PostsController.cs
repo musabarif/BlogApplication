@@ -21,12 +21,15 @@ namespace BlogWebsite.Controllers
         public ActionResult Index()
         {
             List<Post> post = db.Posts.Include(x => x.Tags).ToList();
+            var notification = db.Notifications.Where(x => x.UserName == User.Identity.Name && x.Flag!=1).Count();
+            Session["Notification"] = notification;
             foreach (var item in post)
             {
                 item.Text = HttpUtility.HtmlDecode(item.Text);
                 Regex.Replace(item.Text, @"\s+", " ");
                 item.Text.Trim();
             }
+
             return View(post);
         }
 
@@ -188,7 +191,7 @@ namespace BlogWebsite.Controllers
                 var _list = d.Posts.Where(p => p.Tags.Any(y => y.Name.Contains(sr))).Include(p => p.Tags).ToList();
 
                 if (_list == null)
-                    return View("Index", db.Posts.Include(x => x.Tags).ToList());
+                    return RedirectToAction("Index");
                 else
                     return View("Index", _list);
             }
@@ -234,7 +237,7 @@ namespace BlogWebsite.Controllers
             {
                 Post p = d.Posts.Where(x => x.ID == id).Include(x => x.Tags).FirstOrDefault();
                 Like like = new Like();
-                var ldetails = d.Like.FirstOrDefault(x => x.Username == User.Identity.Name);
+                var ldetails = d.Like.FirstOrDefault(x => x.Username == User.Identity.Name && x.Post_ID==p.ID);
                 if (ldetails == null)
                 {
                     like.Post_ID = id;

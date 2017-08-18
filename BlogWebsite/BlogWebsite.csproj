@@ -202,6 +202,7 @@
     <Compile Include="Models\IndexModel.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\Notifications.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\ProfileView.cs" />
     <Compile Include="Models\RegisterModel.cs" />
@@ -277,6 +278,7 @@
     <Content Include="Views\Account\Display.cshtml" />
     <Content Include="Views\Posts\Like.cshtml" />
     <Content Include="Views\Posts\ReplyForm.cshtml" />
+    <Content Include="Views\Account\Notification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -12,6 +12,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Data.Entity;
+using System.Data.Entity.Core;
 
 namespace BlogWebsite.Controllers
 {
@@ -222,5 +223,106 @@ namespace BlogWebsite.Controllers
             }
             return RedirectToAction("ShowProfile", "Account", new { name = Leader, follow = display });
         }
+
+
+        public ActionResult Notification()
+        {
+            using (var d = new ApplicationDbContext())
+            {
+                var posts = d.Posts.Where(x => x.Author == User.Identity.Name);
+                List<Like> likes = new List<Like>();
+                List<Notifications> notify = new List<Notifications>();
+                List<Comment> comment = new List<Comment>();
+                foreach (var item in posts)
+                {
+                    likes = d.Like.Where(x => x.Post_ID == item.ID).ToList();
+                    comment = d.Comments.Where(x => x.PostID == item.ID).ToList();
+                }
+
+                LikeNotification(likes);
+                CommentNotification(comment);
+                notify = d.Notifications.Where(x => x.UserName == User.Identity.Name).ToList();
+                return View(notify);
+            }
+
+        }
+
+        private void CommentNotification(List<Comment> comment)
+        {
+            using (var d = new ApplicationDbContext())
+            {
+                foreach (var item in comment)
+                {
+                    Notifications n = new Notifications();
+                    if (!AlreadyExists(item))
+                    {
+                        n.Post_ID = item.ID;
+                        n.Action = "Commented";
+                        n.Name = item.Name;
+                        n.UserName = User.Identity.Name;
+                        d.Notifications.Add(n);
+                        d.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        private bool AlreadyExists(Comment item)
+        {
+            using (var d = new ApplicationDbContext())
+            {
+                var exist = d.Notifications.Any(x => x.Post_ID == item.PostID
+                            && x.UserName == User.Identity.Name && x.Name == item.Name
+                            && x.Action == "Commented");
+                return exist;
+            }
+        }
+
+
+        private void LikeNotification(List<Like> likes)
+        {
+            using (var d = new ApplicationDbContext())
+            {
+                foreach (var item in likes)
+                {
+                    Notifications n = new Notifications();
+                    if (!AlreadyExists(item))
+                    {
+                        n.Post_ID = item.Post_ID;
+                        n.Action = "Voted";
+                        n.Name = item.Username;
+                        n.UserName = User.Identity.Name;
+                        d.Notifications.Add(n);
+                        d.SaveChanges();
+                    }
+                }
+            }
+        }
+        private bool AlreadyExists(Like item)
+        {
+            using (var d = new ApplicationDbContext())
+            {
+                var exist = d.Notifications.Any(x => x.Post_ID == item.Post_ID
+                            && x.UserName == User.Identity.Name && x.Name == item.Username
+                            && x.Action == "Voted");
+                return exist;
+            }
+        }
+
+        public ActionResult DisableNotification(int id)
+        {
+            using (var d = new ApplicationDbContext())
+            {
+                List<Notifications> notify = new List<Notifications>();
+                var not = d.Notifications.FirstOrDefault(x => x.ID == id);
+                not.Flag = 1;
+                d.SaveChanges();
+                notify = d.Notifications.Where(x => x.UserName == User.Identity.Name).ToList();
+                var dec = Convert.ToInt32(Session["Notification"]) - 1;
+                Session["Notification"] = dec;
+                return View("Notification", notify);
+            }
+        }
+
     }
 }
